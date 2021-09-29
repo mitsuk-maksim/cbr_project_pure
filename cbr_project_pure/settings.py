@@ -37,6 +37,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'graphene_django',
+    
+    'user',
+    'result',
+    'data_set',
+    'algorithm',
 ]
 
 MIDDLEWARE = [
@@ -48,6 +55,10 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+GRAPHENE = {
+    'SCHEMA': 'cbr_project_pure.schema.schema'  # Where your Graphene schema lives
+}
 
 ROOT_URLCONF = 'cbr_project_pure.urls'
 
