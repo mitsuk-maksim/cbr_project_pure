@@ -25,6 +25,7 @@ class UserManager(BaseUserManager):
         user.save()
         return user
 
+
 class CustomUser(AbstractUser):
 
     email = models.EmailField(blank=False, max_length=254, verbose_name="email address")

@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'result',
     'data_set',
     'algorithm',
+    'main',
 ]
 
 AUTH_USER_MODEL = 'user.CustomUser'
