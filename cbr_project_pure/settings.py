@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
-
+from os.path import abspath
 from pathlib import Path
 import environ
 
@@ -21,6 +21,8 @@ environ.Env.read_env('.env')
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+PROJECT_PATH = Path(__file__).parent.parent
+abspath = PROJECT_PATH.joinpath
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
@@ -52,7 +54,7 @@ INSTALLED_APPS = [
     
     'user',
     'result',
-    'data_set',
+    'dataset',
     'algorithm',
     'main',
 ]
@@ -70,8 +72,9 @@ MIDDLEWARE = [
 ]
 
 GRAPHENE = {
-    'SCHEMA': 'cbr_project_pure.schema.schema',
-    'MIDDLEWARE': [
+    "SCHEMA": 'cbr_project_pure.schema.schema',
+    "ATOMIC_MUTATIONS": True,
+    "MIDDLEWARE": [
         'graphql_jwt.middleware.JSONWebTokenMiddleware',
     ],
 }
@@ -81,8 +84,7 @@ ROOT_URLCONF = 'cbr_project_pure.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates']
-        ,
+        'DIRS': [abspath('main', 'template'), ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -101,7 +103,9 @@ WSGI_APPLICATION = 'cbr_project_pure.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-DATABASES = {'default': env.db('DATABASE_URL')}
+DATABASES = {
+    'default': env.db('DATABASE_URL')
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators

@@ -1,7 +1,7 @@
 import graphene
 
 import user.schema
-import data_set.schema
+import dataset.schema
 import result.schema
 import algorithm.schema
 
@@ -14,7 +14,8 @@ class Query(
 
 
 class Mutation(
-    user.schema.Mutations
+    user.schema.Mutations,
+    dataset.schema.Mutations
 ):
     pass
 
