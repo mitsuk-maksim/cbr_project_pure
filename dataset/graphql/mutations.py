@@ -1,10 +1,12 @@
-# import graphene
-from django.db import transaction
+from graphene_file_upload.scalars import Upload
 
 from cbr_project_pure.functions import CustomMutation
-from cbr_project_pure.graphql_base.base_types import InputObjectType, String, Int, ListOf, Field, ObjectType
+from cbr_project_pure.graphql_base.base_types import InputObjectType, String, Int, ListOf, Field, ObjectType, ID
+from cbr_project_pure.utils import parse_int_param
 from dataset.graphql.types import DatasetType
 from dataset.models import Dataset
+from dataset.services.dataset import DatasetService, DatasetDoesNotExist
+from dataset.services.dataset_upload import DatasetUploadService
 
 
 class ParamInfoInput(InputObjectType):
@@ -36,5 +38,35 @@ class DatasetCreate(CustomMutation):
         return DatasetCreate(dataset=dataset)
 
 
+class DatasetValuesUploadInput(InputObjectType):
+    dataset_id = ID(required=True)
+    file = Upload(required=True)
+    csv_delimiter = String()
+
+
+class DatasetValuesUpload(CustomMutation):
+    dataset = Field(DatasetType)
+
+    class Arguments:
+        input = DatasetValuesUploadInput(required=True)
+
+    @classmethod
+    def mutate(cls, root, info, input: DatasetValuesUploadInput):
+        dataset_service = DatasetService()
+        dataset = dataset_service.get_from_id(dataset_id=parse_int_param(input.dataset_id))
+        if not dataset:
+            DatasetDoesNotExist(dataset_id=input.dataset_id)
+
+        dataset_upload_service = DatasetUploadService()
+        dataset_upload_service.upload_values(
+            dataset=dataset,
+            file=input.file,
+            csv_delimiter=input.csv_delimiter
+        )
+
+        return DatasetValuesUpload(dataset=dataset)
+
+
 class Mutations(ObjectType):
     dataset_create = DatasetCreate.Field()
+    dataset_values_upload = DatasetValuesUpload.Field()
