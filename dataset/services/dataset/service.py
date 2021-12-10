@@ -2,6 +2,7 @@ from typing import Optional
 
 from django.contrib.auth.models import User
 
+from cbr_project_pure.functions import QueryType
 from dataset.models import Dataset
 
 
@@ -16,3 +17,7 @@ class DatasetService:
         :return: датасет или ничего
         """
         return Dataset.objects.filter(id=dataset_id).first()
+
+    def get_datasets(self) -> QueryType[Dataset]:
+        datasets = Dataset.objects.filter(is_active=True)
+        return datasets

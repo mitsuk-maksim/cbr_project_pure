@@ -11,7 +11,13 @@ class DatasetUploadService:
         if 'csv' in file.name:
             self.upload_values_from_csv(dataset=dataset, file=file, csv_delimiter=csv_delimiter)
 
-    def upload_values_from_csv(self, dataset: Dataset, *, file: InMemoryUploadedFile, csv_delimiter: Optional[str]):
+    def upload_values_from_csv(
+            self,
+            dataset: Dataset,
+            *,
+            file: InMemoryUploadedFile,
+            csv_delimiter: Optional[str] = None
+    ):
         column_name = (
             dataset.parameters.values_list('title', flat=True)[::1] +
             dataset.solutions.values_list('title', flat=True)[::1]

@@ -2,13 +2,13 @@ import graphene
 
 import user.schema
 import dataset.schema
-import result.schema
 import algorithm.schema
 
 
 class Query(
     algorithm.schema.Query,
-    user.schema.Query
+    user.schema.Query,
+    dataset.schema.Query,
 ):
     pass
 
