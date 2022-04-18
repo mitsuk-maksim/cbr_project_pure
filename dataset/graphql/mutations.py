@@ -55,7 +55,7 @@ class DatasetValuesUpload(CustomMutation):
         dataset_service = DatasetService()
         dataset = dataset_service.get_from_id(dataset_id=parse_int_param(input.dataset_id))
         if not dataset:
-            DatasetDoesNotExist(dataset_id=input.dataset_id)
+            raise DatasetDoesNotExist(dataset_id=input.dataset_id)
 
         dataset_upload_service = DatasetUploadService()
         dataset_upload_service.upload_values(
