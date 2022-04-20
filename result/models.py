@@ -12,4 +12,4 @@ class Result(AbstractBaseModel):
         on_delete=models.CASCADE
     )
     title = models.CharField(max_length=150, verbose_name='Название результата')
-    match_percentage = models.IntegerField(verbose_name="Процент совпадения")
+    match_percentage = models.FloatField(verbose_name="Процент совпадения")
