@@ -57,8 +57,7 @@ class SckitService:
         # y = dataset.iloc[:, 4].values
 
         X1, Y1 = self.object_to_list(dataset_id=dataset_id)
-        # X_train, X_test, y_train, y_test = train_test_split(X1, Y1, test_size=0.20)
-        X_train, X_test, y_train, y_test = self.train_test_split(X1, Y1, test_size=0.2)
+        X_train, X_test, y_train, y_test = train_test_split(X1, Y1, test_size=0.20)
 
         # масштабирование (не обязательно)
         # scaler = StandardScaler()
