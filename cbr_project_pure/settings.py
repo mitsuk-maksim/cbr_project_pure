@@ -177,3 +177,13 @@ STATIC_URL = '/static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' # for dev
+
+SHELL_PLUS_PRE_IMPORTS = [
+    ('datetime', ('datetime', 'timedelta', 'time')),
+
+    ('algorithm.services.sckit', 'SckitService'),
+    ('algorithm.services.knn', 'KNearestNeighborsService'),
+
+    ('dataset.services.dataset', 'DatasetService'),
+    ('dataset.services.dataset_upload', 'DatasetUploadService'),
+]

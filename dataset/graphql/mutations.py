@@ -7,6 +7,7 @@ from dataset.graphql.types import DatasetType
 from dataset.models import Dataset
 from dataset.services.dataset import DatasetService, DatasetDoesNotExist
 from dataset.services.dataset_upload import DatasetUploadService
+from user.permissions import graphql_login_required
 
 
 class ParamInfoInput(InputObjectType):
@@ -28,13 +29,13 @@ class DatasetCreate(CustomMutation):
         input = DatasetCreateInput(required=True)
 
     @classmethod
+    @graphql_login_required
     def mutate(cls, root, info, input: DatasetCreateInput):
         dataset = Dataset.create_dataset(
             title=input.title,
             param_info=input.param_info,
             solution_title=input.solution_title
         )
-        print(dataset)
         return DatasetCreate(dataset=dataset)
 
 
@@ -51,11 +52,12 @@ class DatasetValuesUpload(CustomMutation):
         input = DatasetValuesUploadInput(required=True)
 
     @classmethod
+    @graphql_login_required
     def mutate(cls, root, info, input: DatasetValuesUploadInput):
         dataset_service = DatasetService()
         dataset = dataset_service.get_from_id(dataset_id=parse_int_param(input.dataset_id))
         if not dataset:
-            DatasetDoesNotExist(dataset_id=input.dataset_id)
+            raise DatasetDoesNotExist(dataset_id=input.dataset_id)
 
         dataset_upload_service = DatasetUploadService()
         dataset_upload_service.upload_values(

@@ -1,10 +1,17 @@
-from typing import Dict, List, Tuple
+from enum import Enum
+from typing import Dict, List
 
 from django.conf import settings
 from django.db import models
+from django_enum_choices.fields import EnumChoiceField
 
 from main.models import AbstractBaseModel
-from result.models import Result
+
+
+class ParameterTypes(str, Enum):
+    integer = 'integer'
+    float = 'float'
+    string = 'string'
 
 
 class Dataset(AbstractBaseModel):
@@ -16,7 +23,6 @@ class Dataset(AbstractBaseModel):
     )
     title = models.CharField(max_length=150, verbose_name='Название базы прецедентов')
     public = models.BooleanField(verbose_name='Публичность базы', default=True)
-    result = models.ForeignKey(Result, related_name='datasets', blank=True, null=True, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.title
@@ -34,7 +40,7 @@ class Dataset(AbstractBaseModel):
         for param in param_info:
             Parameter.objects.create(
                 title=param['title'],
-                type=param['type'],
+                type=param.get('type'),
                 description=param.get('description'),
                 dataset=dataset
             )
@@ -43,14 +49,8 @@ class Dataset(AbstractBaseModel):
 
 
 class Parameter(AbstractBaseModel):
-    PARAMETERS_TYPES = (
-        (0, 'integer'),
-        (1, 'float'),
-        (2, 'string')
-    )
-
     title = models.CharField(max_length=150, verbose_name='Название параметра')
-    type = models.PositiveSmallIntegerField(choices=PARAMETERS_TYPES)
+    type = EnumChoiceField(ParameterTypes, default=ParameterTypes.float, null=True, blank=True)
     description = models.CharField(max_length=150, verbose_name='Описание параметра', null=True, blank=True)
     dataset = models.ForeignKey(Dataset, related_name='parameters', on_delete=models.CASCADE)
 

@@ -1,5 +1,7 @@
-from cbr_project_pure.graphql_base.base_types import NN, ObjectType, String, Int, Boolean, ListOf, ID
-from dataset.models import Dataset, Parameter, Solution, SolutionValue, ParameterValue
+from cbr_project_pure.graphql_base.base_types import NN, ObjectType, String, Int, Boolean, ListOf, ID, Enum, Field
+from dataset.models import Dataset, Parameter, Solution, SolutionValue, ParameterValue, ParameterTypes
+
+ParameterEnumType = Enum.from_enum(ParameterTypes)
 
 
 class SolutionValueType(ObjectType):
@@ -37,7 +39,7 @@ class ParameterType(ObjectType):
 
     id = NN(ID)
     title = NN(String)
-    type = NN(Int)
+    type = Field(ParameterEnumType)
     description = String()
     values = ListOf(NN(ParameterValueType))
 
@@ -53,7 +55,7 @@ class DatasetType(ObjectType):
     id = NN(ID)
     title = NN(String)
     public = Boolean()
-    parameters = ListOf(NN(ParameterType))
+    parameters = ListOf(NN('dataset.graphql.types.ParameterType'))
     solutions = ListOf(NN(SolutionType))
 
     @staticmethod

@@ -23,9 +23,9 @@ def create_csv_file():
 @pytest.fixture()
 def create_dataset():
     param_info = [
-        {'title': 'x1', 'type': 1},
-        {'title': 'x2', 'type': 1},
-        {'title': 'x3', 'type': 1},
+        {'title': 'x1'},
+        {'title': 'x2'},
+        {'title': 'x3'},
     ]
     dataset = Dataset.create_dataset(
         title='test_dataset',
