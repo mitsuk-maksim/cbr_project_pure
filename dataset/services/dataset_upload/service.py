@@ -4,12 +4,15 @@ import pandas as pd
 from django.core.files.uploadedfile import InMemoryUploadedFile
 
 from dataset.models import Dataset, SolutionValue, ParameterValue
+from .exceptions import NotValidFileType
 
 
 class DatasetUploadService:
     def upload_values(self, dataset: Dataset, *, file: InMemoryUploadedFile, csv_delimiter: Optional[str]):
         if 'csv' in file.name:
             self.upload_values_from_csv(dataset=dataset, file=file, csv_delimiter=csv_delimiter)
+        else:
+            raise NotValidFileType(file_name=file.name)
 
     def upload_values_from_csv(
             self,

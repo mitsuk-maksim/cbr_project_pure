@@ -1,12 +1,12 @@
 import pytest
 
-from dataset.models import Dataset
+from dataset.models import Dataset, ParametersType
 
 
 @pytest.mark.django_db
 def test_create_dataset_with_one_param():
     param_info = [
-        {'title': 'x1', 'type': 1}
+        {'title': 'x1', 'type': ParameterTypes.float}
     ]
     dataset = Dataset.create_dataset(
         title='test_dataset',
@@ -22,9 +22,9 @@ def test_create_dataset_with_one_param():
 @pytest.mark.django_db
 def test_create_dataset_with_many_params():
     param_info = [
-                     {'title': 'x1', 'type': 0},
-                     {'title': 'x2', 'type': 1},
-                     {'title': 'x3', 'type': 2},
+                     {'title': 'x1', 'type': ParameterTypes.integer},
+                     {'title': 'x2', 'type': ParameterTypes.float},
+                     {'title': 'x3', 'type': ParameterTypes.string},
                  ]
     dataset = Dataset.create_dataset(
         title='test_dataset',
