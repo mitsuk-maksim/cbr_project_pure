@@ -4,6 +4,7 @@ from django.conf import settings
 from django.db import models
 from django_enum_choices.fields import EnumChoiceField
 
+from algorithm.models import Algorithm
 from dataset.models import Dataset, ParameterValue, SolutionValue
 from main.models import AbstractBaseModel
 
@@ -22,9 +23,14 @@ class Result(AbstractBaseModel):
     )
     title = models.CharField(max_length=150, verbose_name='Название результата')
     match_percentage = models.FloatField(verbose_name="Процент совпадения")
-    dataset = models.ForeignKey(Dataset, related_name='results', on_delete=models.CASCADE)
+    dataset = models.ForeignKey(Dataset, related_name='results', on_delete=models.SET_NULL, null=True)
     parameter_values = models.ManyToManyField(ParameterValue, through='ParameterValueClass')
     solution_predict_values = models.ManyToManyField(SolutionValue, through='SolutionPredictValueClass')
+    algorithm = models.ForeignKey(Algorithm, related_name='results', on_delete=models.SET_NULL, null=True)
+    info = models.JSONField(verbose_name="Информация о настройках алгоритма", default={})
+
+    def __str__(self):
+        return self.title
 
 
 class ParameterValueClass(AbstractBaseModel):

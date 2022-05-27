@@ -68,7 +68,9 @@ class KNearestNeighborsService(BaseAlgorithmService):
             s_values_train=s_values_train,
             s_values_test=s_values_test,
             s_value_ids_predict=s_value_ids_predict,
-            title=title
+            title=title,
+            k=k,
+            test_size=test_size
         )
 
         return result

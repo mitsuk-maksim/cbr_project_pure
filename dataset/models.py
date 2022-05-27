@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 from django.conf import settings
 from django.db import models
@@ -28,7 +28,12 @@ class Dataset(AbstractBaseModel):
         return self.title
 
     @staticmethod
-    def create_dataset(title: str, param_info: List[Dict[str, str]], solution_title) -> 'Dataset':
+    def create_dataset(
+            title: str,
+            param_info: List[Dict[str, str]],
+            solution_info: Dict[str, str],
+            user: Optional[settings.AUTH_USER_MODEL] = None,
+    ) -> 'Dataset':
         """
         Создание пустой базы прецедентов
         :param title: название БП
@@ -36,15 +41,20 @@ class Dataset(AbstractBaseModel):
         :param solution_title: название результата
         :return: Dataset object
         """
-        dataset = Dataset.objects.create(title=title)
+        dataset = Dataset.objects.create(title=title, user=user)
         for param in param_info:
+            type = param.get('type')
             Parameter.objects.create(
                 title=param['title'],
-                type=param.get('type'),
+                type=ParameterTypes[type] if type else None,
                 description=param.get('description'),
                 dataset=dataset
             )
-        Solution.objects.create(title=solution_title, dataset=dataset)
+        Solution.objects.create(
+            title=solution_info['title'],
+            dataset=dataset,
+            description=solution_info.get('description')
+        )
         return dataset
 
 
@@ -61,6 +71,7 @@ class Parameter(AbstractBaseModel):
 class Solution(AbstractBaseModel):
     title = models.CharField(max_length=150, verbose_name='Название решения')
     dataset = models.ForeignKey(Dataset, related_name='solutions', on_delete=models.CASCADE)
+    description = models.CharField(max_length=150, verbose_name='Описание решения', null=True, blank=True)
 
     def __str__(self):
         return self.title

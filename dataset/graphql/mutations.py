@@ -3,7 +3,7 @@ from graphene_file_upload.scalars import Upload
 from cbr_project_pure.functions import CustomMutation
 from cbr_project_pure.graphql_base.base_types import InputObjectType, String, Int, ListOf, Field, ObjectType, ID
 from cbr_project_pure.utils import parse_int_param
-from dataset.graphql.types import DatasetType
+from dataset.graphql.types import DatasetType, ParameterEnumType
 from dataset.models import Dataset
 from dataset.services.dataset import DatasetService, DatasetDoesNotExist
 from dataset.services.dataset_upload import DatasetUploadService
@@ -12,14 +12,19 @@ from user.permissions import graphql_login_required
 
 class ParamInfoInput(InputObjectType):
     title = String(required=True)
-    type = Int(required=True)
+    type = Field(ParameterEnumType, required=True)
+    description = String()
+
+
+class SolutionInfoInput(InputObjectType):
+    title = String(required=True)
     description = String()
 
 
 class DatasetCreateInput(InputObjectType):
     title = String(required=True)
     param_info = ListOf(ParamInfoInput, required=True)
-    solution_title = String(required=True)
+    solution_info = Field(SolutionInfoInput, required=True)
 
 
 class DatasetCreate(CustomMutation):
@@ -34,7 +39,8 @@ class DatasetCreate(CustomMutation):
         dataset = Dataset.create_dataset(
             title=input.title,
             param_info=input.param_info,
-            solution_title=input.solution_title
+            solution_info=input.solution_info,
+            user=info.context.user
         )
         return DatasetCreate(dataset=dataset)
 
