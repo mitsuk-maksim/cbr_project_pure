@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Optional, Tuple
 
 import numpy as np
@@ -5,6 +6,7 @@ from django.conf import settings
 from django.db.models import QuerySet
 from numpy.typing import NDArray
 
+from algorithm.models import Algorithm, AlgorithmEnumType
 from dataset.models import SolutionValue, Dataset
 from result.models import Result, SolutionPredictValueClass, ValueType, ParameterValueClass
 
@@ -73,6 +75,8 @@ class BaseAlgorithmService:
             s_values_train: QuerySet[SolutionValue],
             s_values_test: QuerySet[SolutionValue],
             s_value_ids_predict: list[str],
+            k: int,
+            test_size: float,
             title: Optional[str] = None
     ) -> Result:
         """
@@ -85,11 +89,19 @@ class BaseAlgorithmService:
         :param title: название отчета
         :return: модель результата
         """
+        algorithm = Algorithm.objects.filter(type=AlgorithmEnumType.KNN).first()
+        if not algorithm:
+            raise Algorithm.DoesNotExist("KNN algorithm does not exist")
+
+        info = dict(k=k, test_size=test_size)
+        title = title or f"Report for dataset: '{dataset.title}', time: {datetime.now().strftime('%d.%m.%Y %H:%M')}"
         result = Result.objects.create(
             title=title,
             match_percentage=match_percentage,
             dataset=dataset,
-            user=self.user
+            user=self.user,
+            algorithm=algorithm,
+            info=info
         )
 
         SolutionPredictValueClass.objects.bulk_create([

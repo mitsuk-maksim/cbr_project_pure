@@ -1,7 +1,8 @@
-from cbr_project_pure.graphql_base.base_types import Enum, ObjectType, NN, ID, Field, String, Float, ListOf
+from algorithm.graphql.types import AlgorithmType
+from cbr_project_pure.graphql_base.base_types import Enum, ObjectType, NN, ID, Field, String, Float, ListOf, JSONString
 from dataset.graphql.types import DatasetType, ParameterType, ParameterValueType, SolutionValueType
 from result.models import ValueType, Result
-from user.graphql.types import UserType
+from user.graphql.types import UserType, UserPureType
 
 ValueEnumType = Enum.from_enum(ValueType)
 
@@ -17,13 +18,15 @@ class ResultType(ObjectType):
         model = Result
 
     id = NN(ID)
-    user = Field(UserType)
+    user = Field(UserPureType)
     title = String()
     match_percentage = NN(Float)
     dataset = Field(DatasetType)
     test_parameters = ListOf(NN(ParameterClassType))
     train_parameters = ListOf(NN(ParameterClassType))
     solution_predict_values = ListOf(NN(SolutionValueType))
+    algorithm = Field(AlgorithmType)
+    info = JSONString()
 
     @staticmethod
     def resolve_test_parameters(obj: Result, info):
